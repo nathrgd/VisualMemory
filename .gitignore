@@ -1,0 +1,5 @@
+.vscode/*
+tests.c
+*.o
+main
+grille.txt
