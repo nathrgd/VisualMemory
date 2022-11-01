@@ -3,7 +3,7 @@
 
 
 case_t nouvelle_case(int v) {
-    case_t c = {v, true};
+    case_t c = {v, true, BLEU};
     return c;
 }
 
@@ -13,6 +13,10 @@ bool est_cliquable(case_t c) {
 
 void set_cliquable(case_t *c, bool b) {
     c->cliquable = b;
+}
+
+void set_couleur(case_t *c, couleur_t couleur) {
+    c->couleur = couleur;
 }
 
 int get_valeur(case_t c) {
