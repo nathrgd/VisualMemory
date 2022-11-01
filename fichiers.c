@@ -3,6 +3,9 @@
 #include <malloc.h>
 #include "fichiers.h"
 
+#define W_DEF 8
+#define H_DEF 8
+
 
 
 /**
@@ -36,9 +39,9 @@ void lire_dimensions(const char *nomFichier, int *w, int *h) {
     char buffer[2*MAX_WEIGHT+2]; // 2*MAX_WEIGHT+2 pour prendre en compte les possibles espaces et les caractères de fin de ligne
 
     if (fic == NULL) {
-        printf("Erreur lors de l'ouverture de '%s' : application des dimensions par défaut (10x10)\n", nomFichier);
-        *w = 10;
-        *h = 10;
+        printf("Erreur lors de l'ouverture de '%s' : application des dimensions par défaut (%dx%d)\n", nomFichier, W_DEF, H_DEF);
+        *w = W_DEF;
+        *h = H_DEF;
     } else {
         *w = 0;
         *h = 0;
@@ -48,6 +51,17 @@ void lire_dimensions(const char *nomFichier, int *w, int *h) {
                 (*h)++;
             if (n > *w)
                 *w = n;
+        }
+
+
+        // Les dimensions minimales sont de 2x2
+        if (*w < 2) {
+            printf("'%s' : La largeur de la grille est strict. inférieure à 2 : application de la largeur minimale (2)\n", nomFichier);
+            *w = 2;
+        }
+        if (*h < 2) {
+            printf("'%s' : La hauteur de la grille est strict. inférieure à 2 : application de la hauteur minimale (2)\n", nomFichier);
+            *h = 2;
         }
     }
 }
