@@ -1,16 +1,16 @@
 CC = gcc
 CFLAGS = -Wall -O2 -g
-LIBS =
-LDFLAGS =
-SRC = tests.c type/pile.c type/case.c fichiers.c
-EXEC = tests
+LIBS = -L./SDL2_ttf/.libs
+LDFLAGS = `sdl2-config --cflags --libs` -lSDL2_ttf
+SRC = main.c type/pile.c type/case.c fichiers.c fonctions_SDL.c
+EXEC = main
 OBJ = $(SRC:.c=.o)
 
 
 all: $(EXEC)
 
 
-tests: $(OBJ)
+main: $(OBJ)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LIBS) $(LDFLAGS)
 
 
