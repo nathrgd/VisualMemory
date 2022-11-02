@@ -21,7 +21,7 @@
 void init_SDL(SDL_Window **window, SDL_Renderer **renderer, int weight, int height) {
     if (SDL_Init(SDL_INIT_VIDEO) == -1) {
         printf("Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
-        return exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 
     *window = SDL_CreateWindow("VisualMemory", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, weight, height, SDL_WINDOW_SHOWN);
