@@ -19,6 +19,28 @@ case_t **create_tab_cases(int n, int m) {
 }
 
 
+/**
+ * @brief Réinitialise l'état des cases du jeu.
+ * 
+ * @param tab_cases Tableau des cases du jeu
+ * @param n hauteur du tableau
+ * @param m largeur du tableau
+ * @param texture_def texture des cases par défaut
+ */
+void reset_cases(case_t **tab_cases, int n, int m, SDL_Texture *texture_def) {
+    SDL_Rect dstrect = {0, 0, W_CASE, H_CASE};
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            dstrect.x = j * W_CASE;
+            dstrect.y = i * H_CASE;
+            set_cliquable(&tab_cases[i][j], true);
+            set_couleur(&tab_cases[i][j], BLEU);
+            set_dstrect(&tab_cases[i][j], dstrect);
+            set_texture(&tab_cases[i][j], texture_def);
+        }
+    }
+}
+
 
 /**
  * @brief Libère la mémoire allouée pour un tableau de cases
