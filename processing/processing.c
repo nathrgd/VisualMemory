@@ -63,9 +63,6 @@ void free_tab_cases(case_t **tab, int n) {
  * @param tab_cases tableau de cases
  * @param n hauteur du tableau
  * @param m largeur du tableau
- * @param texture_case_bleue texture d'une case bleue
- * @param texture_case_noire texture d'une case noire
- * @param texture_case_blanche texture d'une case blanche
  */
 void render_copy(SDL_Renderer *renderer, case_t **tab_cases, int n, int m) {
 
