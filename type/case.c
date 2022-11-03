@@ -2,11 +2,6 @@
 #include "case.h"
 
 
-case_t nouvelle_case(int v) {
-    case_t c = {v, true, BLEU};
-    return c;
-}
-
 bool est_cliquable(case_t c) {
     return c.cliquable;
 }
@@ -19,10 +14,18 @@ void set_couleur(case_t *c, couleur_t couleur) {
     c->couleur = couleur;
 }
 
-int get_valeur(case_t c) {
-    return c.valeur;
+void set_texture(case_t *c, SDL_Texture *texture) {
+    c->texture = texture;
 }
 
-bool cases_correspondent(case_t c1, case_t c2) {
-    return get_valeur(c1) == get_valeur(c2);
+void set_dstrect(case_t *c, SDL_Rect dstrect) {
+    c->dstrect = dstrect;
+}
+
+couleur_t get_couleur(case_t c) {
+    return c.couleur;
+}
+
+bool cases_correspondent(case_t *c1, case_t *c2) {
+    return c1 == c2;
 }

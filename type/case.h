@@ -2,6 +2,7 @@
 #define CASE_H
 
 #include <stdbool.h>
+#include <SDL2/SDL.h>
 #include "case.h"
 
 
@@ -13,17 +14,19 @@ typedef enum couleur_e {BLANC, BLEU, NOIR} couleur_t;
 
 
 typedef struct case_s {
-    int valeur;
     bool cliquable;
     couleur_t couleur;
+    SDL_Rect dstrect;
+    SDL_Texture *texture;
 } case_t;
 
 
-case_t nouvelle_case(int v);
 bool est_cliquable(case_t c);
 void set_cliquable(case_t *c, bool b);
 void set_couleur(case_t *c, couleur_t couleur);
-int get_valeur(case_t c);
-bool cases_correspondent(case_t c1, case_t c2);
+void set_texture(case_t *c, SDL_Texture *texture);
+void set_dstrect(case_t *c, SDL_Rect dstrect);
+couleur_t get_couleur(case_t c);
+bool cases_correspondent(case_t *c1, case_t *c2);
 
 #endif
