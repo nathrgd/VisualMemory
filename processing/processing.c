@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <malloc.h>
+#include <time.h>
+#include <sys/random.h>
 #include "processing.h"
 
 
@@ -73,4 +75,57 @@ void render_copy(SDL_Renderer *renderer, case_t **tab_cases, int n, int m) {
             SDL_RenderCopy(renderer, c.texture, NULL, &c.dstrect);
         }
     }
+}
+
+
+
+/**
+ * @brief Sélectionne et affiche, dans l'ordre, les cases à retrouver par l'utilisateur.
+ * 
+ * @param tab_cases tableau de cases
+ * @param n hauteur du tableau
+ * @param m largeur du tableau
+ * @param nb_selections nombre de cases à sélectionner
+ * @param renderer renderer
+ * @param texture_case_blanche texture des cases blanches 
+ */
+void selectionner_et_montrer_cases(case_t **tab_cases, int n, int m, int nb_selections,
+                                   SDL_Renderer *renderer, SDL_Texture *texture_case_blanche, file **f) {
+    int i, j;
+    srand(time(NULL));
+    for (int k = 0; k < nb_selections; k++) {
+        do {
+            i = rand() % n;
+            j = rand() % m;
+        } while (get_couleur(tab_cases[i][j]) == BLANC);
+        set_texture(&tab_cases[i][j], texture_case_blanche);
+        set_couleur(&tab_cases[i][j], BLANC);
+
+        *f = enfiler(&tab_cases[i][j], *f);
+
+        SDL_RenderCopy(renderer, tab_cases[i][j].texture, NULL, &tab_cases[i][j].dstrect);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(1000);
+    }
+    SDL_Delay(2000);
+}
+
+
+/**
+ * @brief Retourne un pointeur vers la case cliquée par l'utilisateur.
+ *        Si l'utilisateur n'a pas cliqué sur une case, la fontion retourne NULL.
+ * 
+ * @param tab_cases tableau de cases
+ * @param n nb de cases en hauteur
+ * @param m nb de cases en largeur
+ * @param xCursor abscisse du curseur de la souris
+ * @param yCursor ordonnée du curseur de la souris
+ */
+case_t * recuperer_case(case_t **tab_cases, int n, int m, int xCursor, int yCursor) {
+    int x = xCursor / W_CASE;
+    int y = yCursor / H_CASE;
+    if (x < m && y < n) {
+        return &tab_cases[y][x];
+    }
+    return NULL;
 }
