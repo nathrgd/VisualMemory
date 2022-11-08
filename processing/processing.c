@@ -34,7 +34,7 @@ void reset_cases(case_t **tab_cases, int n, int m, SDL_Texture *texture_def) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
             dstrect.x = j * W_CASE;
-            dstrect.y = i * H_CASE;
+            dstrect.y = (i + 1) * H_CASE;
             set_cliquable(&tab_cases[i][j], true);
             set_couleur(&tab_cases[i][j], BLEU);
             set_dstrect(&tab_cases[i][j], dstrect);
@@ -124,8 +124,8 @@ void selectionner_et_montrer_cases(case_t **tab_cases, int n, int m, int nb_sele
 case_t * recuperer_case(case_t **tab_cases, int n, int m, int xCursor, int yCursor) {
     int x = xCursor / W_CASE;
     int y = yCursor / H_CASE;
-    if (x < m && y < n) {
-        return &tab_cases[y][x];
+    if (x < m && y >= 1 && y < n+1) {
+        return &tab_cases[y-1][x];
     }
     return NULL;
 }

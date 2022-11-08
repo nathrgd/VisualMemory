@@ -19,7 +19,7 @@
  * @param height hauteur de la fenêtre
  */
 void init_SDL(SDL_Window **window, SDL_Renderer **renderer, int weight, int height) {
-    if (SDL_Init(SDL_INIT_VIDEO) == -1) {
+    if (SDL_Init(SDL_INIT_VIDEO) == -1 || TTF_Init() == -1) {
         printf("Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
@@ -69,4 +69,11 @@ SDL_Texture * charger_texte(const char* message, SDL_Renderer* renderer,
     SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
     return texture;
+}
+
+
+void update_message_text(const char *new_message, SDL_Texture **message_texture, SDL_Renderer *renderer,
+                         TTF_Font *font, SDL_Color color) {
+    SDL_DestroyTexture(*message_texture);
+    *message_texture = charger_texte(new_message, renderer, font, color);
 }
