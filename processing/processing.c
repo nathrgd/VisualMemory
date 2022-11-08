@@ -90,7 +90,7 @@ void render_copy(SDL_Renderer *renderer, case_t **tab_cases, int n, int m) {
  * @param texture_case_blanche texture des cases blanches 
  */
 void selectionner_et_montrer_cases(case_t **tab_cases, int n, int m, int nb_selections,
-                                   SDL_Renderer *renderer, SDL_Texture *texture_case_blanche, file **f) {
+                                   SDL_Renderer *renderer, SDL_Texture *texture_case_blanche, file *f) {
     int i, j;
     srand(time(NULL));
     for (int k = 0; k < nb_selections; k++) {

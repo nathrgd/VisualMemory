@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     case_t **tab_cases;
     case_t *ptr_case, *ptr_case_noire = NULL;
 
-    file *f = file_vide();
+    file f = file_vide();
 
     char message_texte_vies[100];
 
