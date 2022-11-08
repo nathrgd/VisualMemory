@@ -159,10 +159,6 @@ int main(int argc, char *argv[]) {
                     printf("Vous avez ateint le niveau maximal !\n");
                     program_launched = SDL_FALSE;
                 }
-
-                // Suppression d'évenements dans la file pour éviter que l'OS croit que le jeu ne répond pas
-                SDL_PumpEvents();
-                SDL_FlushEvent(SDL_MOUSEBUTTONDOWN);
                 break;
             }
 
@@ -181,10 +177,6 @@ int main(int argc, char *argv[]) {
                 SDL_Delay(2000);
 
                 nb_cases_a_trouver = 3;
-
-                // Suppression d'évenements dans la file pour éviter que l'OS croit que le jeu ne répond pas
-                SDL_PumpEvents();
-                SDL_FlushEvent(SDL_MOUSEBUTTONDOWN);
                 break;
             }
         }
