@@ -63,5 +63,7 @@ void lire_dimensions(const char *nomFichier, int *w, int *h) {
             printf("'%s' : La hauteur de la grille est strict. inférieure à 2 : application de la hauteur minimale (2)\n", nomFichier);
             *h = 2;
         }
+
+        fclose(fic);
     }
 }
