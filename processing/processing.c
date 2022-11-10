@@ -106,15 +106,17 @@ void selectionner_et_montrer_cases(case_t **tab_cases, int n, int m, int nb_sele
         SDL_RenderCopy(renderer, tab_cases[i][j].texture, NULL, &tab_cases[i][j].dstrect);
         SDL_RenderPresent(renderer);
 
-        // Evite à l'application de ne pas répondre
-        SDL_PumpEvents();
-        SDL_FlushEvent(SDL_MOUSEBUTTONDOWN);
-        SDL_FlushEvent(SDL_KEYDOWN);
+        // Empêche l'application de ne pas répondre
 
         // Pause entre chanque nouvel affichage de case
         SDL_Delay(1000);
     }
     SDL_Delay(2000);
+    // Suppression d'évenements ayant eu lieu durant
+    // la sélection des cases
+    SDL_PumpEvents();
+    SDL_FlushEvent(SDL_MOUSEBUTTONDOWN);
+    SDL_FlushEvent(SDL_KEYDOWN);
 }
 
 
