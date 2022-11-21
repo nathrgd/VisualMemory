@@ -45,23 +45,25 @@ void lire_dimensions(const char *nomFichier, int *w, int *h) {
     } else {
         *w = 0;
         *h = 0;
-        while (fgets(buffer, 2*MAX_WEIGHT+2, fic) != NULL && *h <= 50) {
+        while (fgets(buffer, 2*MAX_WEIGHT+2, fic) != NULL && *h < 6) {
             n = taille_sans_espaces_et_fin_lignes(buffer);
             if (n > 0)
                 (*h)++;
+            if (n > 6)
+                n = 6;
             if (n > *w)
                 *w = n;
         }
 
 
-        // Les dimensions minimales sont de 2x2
-        if (*w < 2) {
-            printf("'%s' : La largeur de la grille est strict. inférieure à 2 : application de la largeur minimale (2)\n", nomFichier);
-            *w = 2;
+        // Les dimensions minimales sont de 3x3
+        if (*w < 3) {
+            printf("'%s' : La largeur de la grille est strict. inférieure à 3 : application de la largeur minimale (3)\n", nomFichier);
+            *w = 3;
         }
-        if (*h < 2) {
-            printf("'%s' : La hauteur de la grille est strict. inférieure à 2 : application de la hauteur minimale (2)\n", nomFichier);
-            *h = 2;
+        if (*h < 3) {
+            printf("'%s' : La hauteur de la grille est strict. inférieure à 3 : application de la hauteur minimale (3)\n", nomFichier);
+            *h = 3;
         }
 
         fclose(fic);
