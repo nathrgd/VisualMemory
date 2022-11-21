@@ -66,7 +66,7 @@ void free_tab_cases(case_t **tab, int n) {
  * @param n hauteur du tableau
  * @param m largeur du tableau
  */
-void render_copy(SDL_Renderer *renderer, case_t **tab_cases, int n, int m) {
+void afficher_cases(SDL_Renderer *renderer, case_t **tab_cases, int n, int m) {
 
     case_t c;
     for (int i = 0; i < n; i++) {
@@ -89,24 +89,24 @@ void render_copy(SDL_Renderer *renderer, case_t **tab_cases, int n, int m) {
  * @param renderer renderer
  * @param texture_case_blanche texture des cases blanches 
  */
-void selectionner_et_montrer_cases(case_t **tab_cases, int n, int m, int nb_selections,
-                                   SDL_Renderer *renderer, SDL_Texture *texture_case_blanche, file *f) {
+void selectionner_et_montrer_cases(jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer *renderer) {
     int i, j;
     srand(time(NULL));
-    for (int k = 0; k < nb_selections; k++) {
+    for (int k = 0; k < jeu_data->nb_cases_a_trouver; k++) {
         do {
-            i = rand() % n;
-            j = rand() % m;
-        } while (get_couleur(tab_cases[i][j]) == BLANC);
-        set_texture(&tab_cases[i][j], texture_case_blanche);
-        set_couleur(&tab_cases[i][j], BLANC);
+            i = rand() % jeu_data->w_window;
+            j = rand() % jeu_data->h_window;
+        } while (get_couleur(jeu_data->tab_cases[i][j]) == BLANC);
+        set_texture(&jeu_data->tab_cases[i][j], resources->case_blanche);
+        set_couleur(&jeu_data->tab_cases[i][j], BLANC);
 
-        *f = enfiler(&tab_cases[i][j], *f);
+        jeu_data->f = enfiler(&jeu_data->tab_cases[i][j], jeu_data->f);
 
-        SDL_RenderCopy(renderer, tab_cases[i][j].texture, NULL, &tab_cases[i][j].dstrect);
+        SDL_RenderCopy(renderer, jeu_data->tab_cases[i][j].texture, NULL, &jeu_data->tab_cases[i][j].dstrect);
         SDL_RenderPresent(renderer);
 
         // Empêche l'application de ne pas répondre
+        SDL_PumpEvents();
 
         // Pause entre chanque nouvel affichage de case
         SDL_Delay(1000);
