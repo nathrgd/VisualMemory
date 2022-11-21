@@ -13,12 +13,13 @@
 typedef struct jeu_data_s {
     case_t **tab_cases; /**< Tableau des cases du jeu */
     case_t *ptr_case_noire; /**< Pointeur vers la case noire, NULL si pas de case noire */
-    int w_window; /**< Largeur de la fenêtre */
-    int h_window; /**< Hauteur de la fenêtre */
+    int w_window; /**< Largeur de la fenêtre (en cases) */
+    int h_window; /**< Hauteur de la fenêtre (en cases) */
     int nb_cases_a_trouver; /**< Nombre de cases à trouver */
     int vies; /**< Nombre de vies */
     int program_launched; /**< Indique si le programme doit rester lancé */
     int new_round; /**< Indique si une nouvelle manche doit être lancée */
+    char message_resultat[50]; /**< Message à afficher en fin de manche */
     file f; /**< File contenant les cases à trouver */
 } jeu_data_t;
 
@@ -31,6 +32,7 @@ typedef struct resources_s {
     SDL_Texture *case_noire; /**< Texture de la case noire */
     SDL_Texture *case_blanche; /**< Texture de la case blanche */
     SDL_Texture *texte_vies; /**< Texture du texte affichant le nombre de vies */
+    SDL_Texture *texte_resultat; /**< Texture du texte affichant le résultat de la manche */
     SDL_Texture *fond; /**< Texture du fond */
     TTF_Font *font; /**< Police d'écriture */
 } resources_t;

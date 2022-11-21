@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "jeu.h"
 #include "processing.h"
 #include "../fonctions_SDL.h"
@@ -20,6 +21,7 @@ void init_jeu_data(jeu_data_t *jeu_data, int w, int h) {
     jeu_data->vies = 3;
     jeu_data->program_launched = 1;
     jeu_data->new_round = 1;
+    jeu_data->message_resultat[0] = '\0';
     jeu_data->f = file_vide();
 }
 
@@ -34,6 +36,7 @@ void init_resources(resources_t *resources, SDL_Renderer *renderer) {
     resources->fond = charger_image("img/fond.bmp", renderer);
     resources->font = TTF_OpenFont("police/arial.ttf", 20);
     resources->texte_vies = NULL;
+    resources->texte_resultat = NULL;
 }
 
 
@@ -49,11 +52,12 @@ void init_new_round(jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer *
     jeu_data->f = file_vide();
 
     jeu_data->vies = jeu_data->nb_cases_a_trouver / 2;
+    jeu_data->message_resultat[0] = '\0';
 
     reset_cases(jeu_data->tab_cases, jeu_data->h_window, jeu_data->w_window, resources->case_bleue);
     update_graphics(jeu_data, resources, renderer);
 
-    selectionner_et_montrer_cases(jeu_data->tab_cases, jeu_data->h_window, jeu_data->w_window, jeu_data->nb_cases_a_trouver, renderer, resources->case_blanche, &jeu_data->f);
+    selectionner_et_montrer_cases(jeu_data, resources, renderer);
     reset_cases(jeu_data->tab_cases, jeu_data->h_window, jeu_data->w_window, resources->case_bleue);
 
     jeu_data->new_round = 0;
@@ -114,30 +118,33 @@ void gerer_evenements(SDL_Event *event, jeu_data_t *jeu_data, resources_t *resou
 
         // On stoppe la partie si le joueur a trouvé toutes les cases
         if (file_est_vide(jeu_data->f)) {
-            update_graphics(jeu_data, resources, renderer);
-            printf("Gagné !\n");
-            jeu_data->new_round = 1;
-            SDL_Delay(2000);
+            sprintf(jeu_data->message_resultat, "Manche gagne !");
 
             jeu_data->nb_cases_a_trouver++;
             if (jeu_data->nb_cases_a_trouver > jeu_data->h_window * jeu_data->w_window) {
-                printf("Vous avez ateint le niveau maximal !\n");
+                sprintf(jeu_data->message_resultat, "Gagne !");
                 jeu_data->program_launched = 0;
             }
+            update_graphics(jeu_data, resources, renderer);
+            jeu_data->new_round = 1;
+            SDL_Delay(2000);
+
             break;
         }
 
 
         // On stoppe la partie si le joueur n'a plus de vies
         if (jeu_data->vies == 0) {
+            sprintf(jeu_data->message_resultat, "Perdu !");
             update_graphics(jeu_data, resources, renderer);
-            printf("Perdu !\n");
             jeu_data->new_round = 1;
             SDL_Delay(2000);
 
             jeu_data->nb_cases_a_trouver = 3;
             break;
         }
+
+        jeu_data->message_resultat[0] = '\0';
     }
 }
 
@@ -148,17 +155,32 @@ void gerer_evenements(SDL_Event *event, jeu_data_t *jeu_data, resources_t *resou
  */
 void update_graphics(jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer *renderer) {
     char message_texte_vies[50];
+    SDL_Color blanc = {255, 255, 255};
     SDL_Rect dstrect_texte_vies = {W_CASE/6, H_CASE/12, W_CASE, H_CASE/2};
+    SDL_Rect dstrect_texte_resultat = {jeu_data->w_window * W_CASE / 2, jeu_data->h_window/2, W_CASE, H_CASE*0.7};
+
+
+    // Adaptation de la taille du texte
+    if (strcmp(jeu_data->message_resultat, "Manche gagne !") == 0) {
+        dstrect_texte_resultat.w = W_CASE * 1.5;
+        dstrect_texte_resultat.h = H_CASE * 0.9;
+    }
 
     // Application du fond
     SDL_RenderCopy(renderer, resources->fond, NULL, NULL);
 
     // MAJ du texte indiquant le nombre de vies restantes
     sprintf(message_texte_vies, "Vies : %d", jeu_data->vies);
-    update_message_text(message_texte_vies, &resources->texte_vies, renderer, resources->font, (SDL_Color){255, 255, 255, 255});
+    update_message_text(message_texte_vies, &resources->texte_vies, renderer, resources->font, blanc);
     SDL_RenderCopy(renderer, resources->texte_vies, NULL, &dstrect_texte_vies);
 
-    render_copy(renderer, jeu_data->tab_cases, jeu_data->h_window, jeu_data->w_window);
+    // MAJ du texte indiquant le résultat de la partie
+    if (jeu_data->message_resultat[0] != '\0') {
+        update_message_text(jeu_data->message_resultat, &resources->texte_resultat, renderer, resources->font, blanc);
+        SDL_RenderCopy(renderer, resources->texte_resultat, NULL, &dstrect_texte_resultat);
+    }
+
+    afficher_cases(renderer, jeu_data->tab_cases, jeu_data->h_window, jeu_data->w_window);
     SDL_RenderPresent(renderer);
     SDL_Delay(10); // Pause pour éviter un bug d'affichage
 }
