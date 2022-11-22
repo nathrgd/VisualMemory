@@ -138,3 +138,38 @@ case_t * recuperer_case(case_t **tab_cases, int n, int m, int xCursor, int yCurs
     }
     return NULL;
 }
+
+
+char * get_texte_pour_historique(int manche, int score) {
+    time_t t;
+    struct tm *local;
+    char *texte;
+    int taille_nombres = 2;
+    int n = 10;
+
+    // Calcul du nombre de caractères nécéssaire pour afficher les nombres
+    while (manche / n != 0) {
+        taille_nombres++;
+        n *= 10;
+    }
+    n = 10;
+    while (score / n != 0) {
+        taille_nombres++;
+        n *= 10;
+    }
+
+    // Détermination de la date et de l'heure locale
+    time(&t);
+    local = localtime(&t);
+
+    // 42 caractères pour le texte de base (+1 pour '\0')
+    texte = malloc((taille_nombres + 43) * sizeof(char));
+    sprintf(texte, "%02d/%02d/%d - %02d:%02d  :  Manche %d - Score : %d\n", local->tm_mday,
+                                                                       local->tm_mon + 1,
+                                                                       local->tm_year + 1900,
+                                                                       local->tm_hour,
+                                                                       local->tm_min,
+                                                                       manche,
+                                                                       score);
+    return texte;
+}

@@ -15,6 +15,7 @@ typedef struct jeu_data_s {
     case_t *ptr_case_noire; /**< Pointeur vers la case noire, NULL si pas de case noire */
     int w_window; /**< Largeur de la fenêtre (en cases) */
     int h_window; /**< Hauteur de la fenêtre (en cases) */
+    int score; /**< Score du joueur */
     int nb_cases_a_trouver; /**< Nombre de cases à trouver */
     int vies; /**< Nombre de vies */
     int program_launched; /**< Indique si le programme doit rester lancé */
@@ -43,6 +44,7 @@ void init_resources(resources_t *resources, SDL_Renderer *renderer);
 void init_new_round(jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer *renderer);
 void gerer_evenements(SDL_Event *event, jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer *renderer);
 void update_graphics(jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer *renderer);
+void update_historique(jeu_data_t *jeu_data);
 void free_jeu_data(jeu_data_t jeu_data);
 void free_resources(resources_t resources);
 

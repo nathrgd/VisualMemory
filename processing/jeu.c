@@ -2,6 +2,7 @@
 #include <string.h>
 #include "jeu.h"
 #include "processing.h"
+#include "../fichiers.h"
 #include "../fonctions_SDL.h"
 
 
@@ -17,6 +18,7 @@ void init_jeu_data(jeu_data_t *jeu_data, int w, int h) {
     jeu_data->ptr_case_noire = NULL;
     jeu_data->w_window = w;
     jeu_data->h_window = h;
+    jeu_data->score = 0;
     jeu_data->nb_cases_a_trouver = 3;
     jeu_data->vies = 3;
     jeu_data->program_launched = 1;
@@ -74,11 +76,13 @@ void gerer_evenements(SDL_Event *event, jeu_data_t *jeu_data, resources_t *resou
         switch (event->type) {
             case SDL_QUIT:
                 jeu_data->program_launched = 0;
+                update_historique(jeu_data);
                 break;
             case SDL_KEYDOWN:
                 switch (event->key.keysym.sym) {
                     case SDLK_q:
                         jeu_data->program_launched = 0;
+                        update_historique(jeu_data);
                         break;
                     default:
                         break;
@@ -102,12 +106,14 @@ void gerer_evenements(SDL_Event *event, jeu_data_t *jeu_data, resources_t *resou
                             set_texture(ptr_case, resources->case_blanche);
                             set_cliquable(ptr_case, false);
                             defiler(&jeu_data->f);
+                            jeu_data->score++;
                         } else {
                             set_couleur(ptr_case, NOIR);
                             set_texture(ptr_case, resources->case_noire);
                             set_cliquable(ptr_case, false);
                             jeu_data->ptr_case_noire = ptr_case;
                             jeu_data->vies -= 1;
+                            jeu_data->score -= jeu_data->score > 0 ? 1 : 0;
                         }
                     }
                     break;
@@ -123,6 +129,8 @@ void gerer_evenements(SDL_Event *event, jeu_data_t *jeu_data, resources_t *resou
             jeu_data->nb_cases_a_trouver++;
             if (jeu_data->nb_cases_a_trouver > jeu_data->h_window * jeu_data->w_window) {
                 sprintf(jeu_data->message_resultat, "Gagne !");
+                jeu_data->nb_cases_a_trouver--; // Désincrémentation pour déterminer manche pour historique
+                update_historique(jeu_data);
                 jeu_data->program_launched = 0;
             }
             update_graphics(jeu_data, resources, renderer);
@@ -137,10 +145,10 @@ void gerer_evenements(SDL_Event *event, jeu_data_t *jeu_data, resources_t *resou
         if (jeu_data->vies == 0) {
             sprintf(jeu_data->message_resultat, "Perdu !");
             update_graphics(jeu_data, resources, renderer);
-            jeu_data->new_round = 1;
-            SDL_Delay(2000);
+            update_historique(jeu_data);
+            SDL_Delay(3000);
 
-            jeu_data->nb_cases_a_trouver = 3;
+            jeu_data->program_launched = 0;
             break;
         }
 
@@ -184,6 +192,15 @@ void update_graphics(jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer 
     SDL_RenderPresent(renderer);
     SDL_Delay(10); // Pause pour éviter un bug d'affichage
 }
+
+
+
+void update_historique(jeu_data_t *jeu_data) {
+    char * texte = get_texte_pour_historique(jeu_data->nb_cases_a_trouver - 2, jeu_data->score);
+    ecrire_en_debut("Historique.txt", texte);
+    free(texte);
+}
+
 
 
 /**

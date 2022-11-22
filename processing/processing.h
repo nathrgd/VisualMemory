@@ -13,5 +13,6 @@ void afficher_cases(SDL_Renderer *renderer, case_t **tab_cases, int n, int m);
 void reset_cases(case_t **tab_cases, int n, int m, SDL_Texture *texture_def);
 void selectionner_et_montrer_cases(jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer *renderer);
 case_t * recuperer_case(case_t **tab_cases, int n, int m, int xCursor, int yCursor);
+char * get_texte_pour_historique(int manche, int score);
 
 #endif
