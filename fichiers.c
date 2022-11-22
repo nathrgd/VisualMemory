@@ -95,6 +95,20 @@ int nb_lignes(const char *nomFichier) {
 
 
 /**
+ * @brief Ecrit le contenu dans le fichier.
+ */
+void ecrire(const char *nomFichier, const char *contenu) {
+    FILE *fic = fopen(nomFichier, "w");
+    if (fic == NULL) {
+        printf("Erreur lors de l'ouverture de '%s' : impossible d'écrire le contenu\n", nomFichier);
+    } else {
+        fputs(contenu, fic);
+        fclose(fic);
+    }
+}
+
+
+/**
  * @brief Ecrit en début d'un fichier le contenu passé en paramètre.
  * 
  * @param nomFichier nom du fichier où écrire le contenu
@@ -109,7 +123,6 @@ void ecrire_en_debut(const char *nomFichier, const char *contenu) {
         printf("Erreur lors de l'ouverture de '%s' : impossible de lire le fichier\n", nomFichier);
     } else {
         n = nb_lignes(nomFichier) + 2;
-        printf("'%s' : %d lignes\n", nomFichier, n);
         // On limite l'historique aux 10 dernières parties
         if (n > 20) {
             n = 19;
