@@ -3,3 +3,5 @@ tests.c
 *.o
 main
 grille.txt
+Historique.txt
+derniere_grille.txt
