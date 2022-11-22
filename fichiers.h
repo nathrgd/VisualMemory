@@ -9,7 +9,7 @@
 
 int taille_sans_espaces_et_fin_lignes(const char *chaine);
 void lire_dimensions(const char *nomFichier, int *w, int *h);
-
+void ecrire_en_debut(const char *nomFichier, const char *contenu);
 
 
 #endif

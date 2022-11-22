@@ -69,3 +69,84 @@ void lire_dimensions(const char *nomFichier, int *w, int *h) {
         fclose(fic);
     }
 }
+
+
+/**
+ * @brief Retourne le nombre de lignes d'un fichier.
+ */
+int nb_lignes(const char *nomFichier) {
+    FILE *fic = fopen(nomFichier, "r");
+    char c;
+    int n = 0;
+
+    if (fic == NULL) {
+        printf("Erreur lors de l'ouverture de '%s' : impossible de compter le nombre de lignes\n", nomFichier);
+    } else {
+        c = fgetc(fic);
+        while (c != EOF) {
+            if (c == '\n')
+                n++;
+            c = fgetc(fic);
+        }
+        fclose(fic);
+    }
+    return n;
+}
+
+
+/**
+ * @brief Ecrit en début d'un fichier le contenu passé en paramètre.
+ * 
+ * @param nomFichier nom du fichier où écrire le contenu
+ * @param contenu contenu à écrire
+ */
+void ecrire_en_debut(const char *nomFichier, const char *contenu) {
+    FILE *fic = fopen(nomFichier, "r");
+    char **lignes;
+    int n, i;
+
+    if (fic == NULL) {
+        printf("Erreur lors de l'ouverture de '%s' : impossible de lire le fichier\n", nomFichier);
+    } else {
+        n = nb_lignes(nomFichier) + 2;
+        printf("'%s' : %d lignes\n", nomFichier, n);
+        // On limite l'historique aux 10 dernières parties
+        if (n > 20) {
+            n = 19;
+        }
+        // On n'écrit qu'une ligne si l'historique est vide
+        if (n == 2) {
+            n = 1;
+        }
+        lignes = malloc(n * sizeof(char *));
+
+        lignes[0] = malloc(50 * sizeof(char));
+        lignes[1] = malloc(2 * sizeof(char));
+        sprintf(lignes[0], "%s", contenu);
+        if (n > 1) {
+            lignes[1][0] = '\n';
+            lignes[1][1] = '\0';
+        }
+        // On lit les lignes du fichier et on les mets à la suite du contenu à ajouter
+        for (i = (n > 1 ? 2 : 1); i < n; i++) {
+            lignes[i] = malloc(50 * sizeof(char));
+            lignes[i] = fgets(lignes[i], 50, fic);
+        }
+        fclose(fic);
+
+        fic = fopen(nomFichier, "w");
+        if (fic == NULL) {
+            printf("Erreur lors de l'ouverture de '%s' : impossible d'écrire dans le fichier\n", nomFichier);
+        } else {
+            // Ecriture du nouveau contenu
+            for (i = 0; i < n; i++) {
+                fputs(lignes[i], fic);
+            }
+            fclose(fic);
+        }
+        for (i = 0; i < n; i++) {
+            free(lignes[i]);
+        }
+        free(lignes);
+    }
+}
