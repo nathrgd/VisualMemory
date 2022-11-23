@@ -54,12 +54,14 @@ int main(int argc, char *argv[]) {
 
         if (jeu_data.new_round) {
             init_new_round(&jeu_data, &resources, renderer);
+            update_derniere_grille(&jeu_data);
         }
 
         update_graphics(&jeu_data, &resources, renderer);
 
         gerer_evenements(&event, &jeu_data, &resources, renderer);
     }
+    update_historique(&jeu_data);
             
     clean(window, renderer, jeu_data, resources);
 

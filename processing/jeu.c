@@ -2,6 +2,7 @@
 #include <string.h>
 #include "jeu.h"
 #include "processing.h"
+#include "../type/file.h"
 #include "../fichiers.h"
 #include "../fonctions_SDL.h"
 
@@ -76,13 +77,11 @@ void gerer_evenements(SDL_Event *event, jeu_data_t *jeu_data, resources_t *resou
         switch (event->type) {
             case SDL_QUIT:
                 jeu_data->program_launched = 0;
-                update_historique(jeu_data);
                 break;
             case SDL_KEYDOWN:
                 switch (event->key.keysym.sym) {
                     case SDLK_q:
                         jeu_data->program_launched = 0;
-                        update_historique(jeu_data);
                         break;
                     default:
                         break;
@@ -125,15 +124,13 @@ void gerer_evenements(SDL_Event *event, jeu_data_t *jeu_data, resources_t *resou
         // On stoppe la partie si le joueur a trouvé toutes les cases
         if (file_est_vide(jeu_data->f)) {
             sprintf(jeu_data->message_resultat, "Manche gagne !");
-
+            update_graphics(jeu_data, resources, renderer);
             jeu_data->nb_cases_a_trouver++;
             if (jeu_data->nb_cases_a_trouver > jeu_data->h_window * jeu_data->w_window) {
                 sprintf(jeu_data->message_resultat, "Gagne !");
                 jeu_data->nb_cases_a_trouver--; // Désincrémentation pour déterminer manche pour historique
-                update_historique(jeu_data);
                 jeu_data->program_launched = 0;
             }
-            update_graphics(jeu_data, resources, renderer);
             jeu_data->new_round = 1;
             SDL_Delay(2000);
 
@@ -145,7 +142,6 @@ void gerer_evenements(SDL_Event *event, jeu_data_t *jeu_data, resources_t *resou
         if (jeu_data->vies == 0) {
             sprintf(jeu_data->message_resultat, "Perdu !");
             update_graphics(jeu_data, resources, renderer);
-            update_historique(jeu_data);
             SDL_Delay(3000);
 
             jeu_data->program_launched = 0;
@@ -201,6 +197,44 @@ void update_historique(jeu_data_t *jeu_data) {
     free(texte);
 }
 
+
+void update_derniere_grille(jeu_data_t *jeu_data) {
+    char *texte = malloc((jeu_data->h_window * (jeu_data->w_window + 1) + 1) * sizeof(char));
+    int cpt = 0, continuer;
+
+    // Modélisation de la grille par une chaîne de caractères
+    // Initialisation de texte
+    for (int i = 0; i < jeu_data->h_window * (jeu_data->w_window + 1); i++) {
+        texte[i] = '0';
+        if (cpt == jeu_data->w_window) {
+            texte[i] = '\n';
+            cpt = 0;
+        } else {
+            cpt++;
+        }
+    }
+    texte[jeu_data->h_window * (jeu_data->w_window + 1)] = '\0';
+
+    for (int k = 0; k < jeu_data->nb_cases_a_trouver; k++) {
+        case_t *ptr_case = defiler(&jeu_data->f);
+        continuer = 1;
+        for (int i = 0; i < jeu_data->h_window && continuer; i++) {
+            for (int j = 0; j < jeu_data->w_window && continuer; j++) {
+                if (cases_correspondent(&jeu_data->tab_cases[i][j], ptr_case)) {
+                    texte[i * (jeu_data->w_window + 1) + j] = k + '1';
+                    cpt--;
+                    continuer = 0;
+                }
+            }
+        }
+        // On réenfile le pointeur pour que la file soit la même qu'au début de la fonction
+        jeu_data->f = enfiler(ptr_case, jeu_data->f);
+    }
+
+    // Ecriture du contenu de la grille dans derniere_grille.txt
+    ecrire("derniere_grille.txt", texte);
+    free(texte);
+}
 
 
 /**

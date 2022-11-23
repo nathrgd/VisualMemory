@@ -45,6 +45,7 @@ void init_new_round(jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer *
 void gerer_evenements(SDL_Event *event, jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer *renderer);
 void update_graphics(jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer *renderer);
 void update_historique(jeu_data_t *jeu_data);
+void update_derniere_grille(jeu_data_t *jeu_data);
 void free_jeu_data(jeu_data_t jeu_data);
 void free_resources(resources_t resources);
 
