@@ -19,14 +19,20 @@
  * @param height hauteur de la fenêtre
  */
 void init_SDL(SDL_Window **window, SDL_Renderer **renderer, int weight, int height) {
-    if (SDL_Init(SDL_INIT_VIDEO) == -1 || TTF_Init() == -1) {
+    if (SDL_Init(SDL_INIT_VIDEO) == -1) {
         printf("Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+        exit(EXIT_FAILURE);
+    }
+    if (TTF_Init() == -1) {
+        printf("Erreur d'initialisation de la SDL_ttf : %s\n", TTF_GetError());
+        SDL_Quit();
         exit(EXIT_FAILURE);
     }
 
     *window = SDL_CreateWindow("VisualMemory", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, weight, height, SDL_WINDOW_SHOWN);
     if (*window == NULL) {
         printf("Erreur lors de la création de la fenêtre : %s\n", SDL_GetError());
+        TTF_Quit();
         SDL_Quit();
         exit(EXIT_FAILURE);
     }
@@ -35,6 +41,7 @@ void init_SDL(SDL_Window **window, SDL_Renderer **renderer, int weight, int heig
     if (*renderer == NULL) {
         printf("Erreur lors de la création du renderer : %s\n", SDL_GetError());
         SDL_DestroyWindow(*window);
+        TTF_Quit();
         SDL_Quit();
         exit(EXIT_FAILURE);
     }
