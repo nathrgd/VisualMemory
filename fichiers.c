@@ -3,8 +3,8 @@
 #include <malloc.h>
 #include "fichiers.h"
 
-#define W_DEF 8
-#define H_DEF 8
+#define W_DEF 4
+#define H_DEF 4
 
 
 
@@ -49,8 +49,8 @@ void lire_dimensions(const char *nomFichier, int *w, int *h) {
             n = taille_sans_espaces_et_fin_lignes(buffer);
             if (n > 0)
                 (*h)++;
-            if (n > 6)
-                n = 6;
+            if (n > 8)
+                n = 8;
             if (n > *w)
                 *w = n;
         }
