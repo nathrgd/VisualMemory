@@ -1,6 +1,11 @@
 #ifndef JEU_H
 #define JEU_H
 
+#define W_SCREEN 800
+#define H_SCREEN 650
+#define X_SCREEN_CENTER 400
+#define Y_SCREEN_CENTER 325
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include "../type/case.h"

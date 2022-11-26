@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 
     lire_dimensions("grille.txt", &w, &h);
     
-    init_SDL(&window, &renderer, w*W_CASE, (h + 1)*H_CASE);
+    init_SDL(&window, &renderer, W_SCREEN, H_SCREEN);
 
     init_jeu_data(&jeu_data, w, h);
     init_resources(&resources, renderer);

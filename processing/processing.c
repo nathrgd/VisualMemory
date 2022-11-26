@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <time.h>
+#include <math.h>
 #include <sys/random.h>
 #include "processing.h"
 
@@ -33,8 +34,9 @@ void reset_cases(case_t **tab_cases, int n, int m, SDL_Texture *texture_def) {
     SDL_Rect dstrect = {0, 0, W_CASE, H_CASE};
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
-            dstrect.x = j * W_CASE;
-            dstrect.y = (i + 1) * H_CASE;
+            dstrect.x = (X_SCREEN_CENTER - m * 0.5 * W_CASE) + j * W_CASE;
+            dstrect.y = (Y_SCREEN_CENTER - n * 0.5 * H_CASE) + i * H_CASE;
+
             set_cliquable(&tab_cases[i][j], true);
             set_couleur(&tab_cases[i][j], BLEU);
             set_dstrect(&tab_cases[i][j], dstrect);
@@ -94,8 +96,8 @@ void selectionner_et_montrer_cases(jeu_data_t *jeu_data, resources_t *resources,
     srand(time(NULL));
     for (int k = 0; k < jeu_data->nb_cases_a_trouver; k++) {
         do {
-            i = rand() % jeu_data->w_window;
-            j = rand() % jeu_data->h_window;
+            i = rand() % jeu_data->h_window;
+            j = rand() % jeu_data->w_window;
         } while (get_couleur(jeu_data->tab_cases[i][j]) == BLANC);
         set_texture(&jeu_data->tab_cases[i][j], resources->case_blanche);
         set_couleur(&jeu_data->tab_cases[i][j], BLANC);
@@ -131,10 +133,27 @@ void selectionner_et_montrer_cases(jeu_data_t *jeu_data, resources_t *resources,
  * @param yCursor ordonnée du curseur de la souris
  */
 case_t * recuperer_case(case_t **tab_cases, int n, int m, int xCursor, int yCursor) {
-    int x = xCursor / W_CASE;
-    int y = yCursor / H_CASE;
-    if (x < m && y >= 1 && y < n+1) {
-        return &tab_cases[y-1][x];
+    int x_case = (X_SCREEN_CENTER - m * 0.5 * W_CASE); // Abscisse de la case en haut à gauche de la grille
+    int y_case = (Y_SCREEN_CENTER - n * 0.5 * H_CASE); // Ordonnée de la case en haut à gauche de la grille
+
+    int horiz_dist = abs(xCursor - X_SCREEN_CENTER);
+    int vert_dist = abs(yCursor - Y_SCREEN_CENTER);
+    int i = 0;
+    int j = 0;
+
+    // Si l'utilisateur à cliqué sur une case
+    if (horiz_dist <= m * 0.5 * W_CASE && vert_dist <= n * 0.5 * H_CASE) {
+        // On cherche la colonne de la case cliquée
+        while (xCursor >= x_case) {
+            x_case += W_CASE;
+            j++;
+        }
+        // On cherche la ligne de la case cliquée
+        while (yCursor >= y_case) {
+            y_case += H_CASE;
+            i++;
+        }
+        return &tab_cases[i-1][j-1];
     }
     return NULL;
 }
