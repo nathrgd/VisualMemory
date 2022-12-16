@@ -37,6 +37,8 @@ typedef struct resources_s {
     SDL_Texture *case_bleue; /**< Texture de la case bleue */
     SDL_Texture *case_noire; /**< Texture de la case noire */
     SDL_Texture *case_blanche; /**< Texture de la case blanche */
+    SDL_Texture *coeur; /**< Texture des coeurs (pv) */
+    SDL_Texture *texte_manche; /**< Texture du texte indiquant la manche actuelle */
     SDL_Texture *texte_vies; /**< Texture du texte affichant le nombre de vies */
     SDL_Texture *texte_resultat; /**< Texture du texte affichant le résultat de la manche */
     SDL_Texture *fond; /**< Texture du fond */

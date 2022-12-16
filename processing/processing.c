@@ -81,6 +81,16 @@ void afficher_cases(SDL_Renderer *renderer, case_t **tab_cases, int n, int m) {
 
 
 
+void afficher_vies(SDL_Renderer *renderer, int nb_vies, SDL_Texture *texture_coeur) {
+    SDL_Rect dstrect = {420, 12, 36, 36};
+    for (int i = 0; i < nb_vies; i++) {
+        SDL_RenderCopy(renderer, texture_coeur, NULL, &dstrect);
+        dstrect.x += 36;
+    }
+}
+
+
+
 /**
  * @brief Sélectionne et affiche, dans l'ordre, les cases à retrouver par l'utilisateur.
  * 

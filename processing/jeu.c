@@ -36,9 +36,11 @@ void init_resources(resources_t *resources, SDL_Renderer *renderer) {
     resources->case_bleue = charger_image("img/case_bleue.bmp", renderer);
     resources->case_noire = charger_image("img/case_noire.bmp", renderer);
     resources->case_blanche = charger_image("img/case_blanche.bmp", renderer);
+    resources->coeur = charger_image("img/coeur.bmp", renderer);
     resources->fond = charger_image("img/fond.bmp", renderer);
     resources->font = TTF_OpenFont("police/arial.ttf", 20);
-    resources->texte_vies = NULL;
+    resources->texte_manche = NULL;
+    resources->texte_vies = charger_texte("Vies : ", renderer, resources->font, (SDL_Color){255, 255, 255});
     resources->texte_resultat = NULL;
 }
 
@@ -55,6 +57,11 @@ void init_new_round(jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer *
     jeu_data->f = file_vide();
 
     jeu_data->vies = jeu_data->nb_cases_a_trouver / 2;
+    // Le nombre maximum de vies est de 10
+    if (jeu_data->vies >10) {
+        jeu_data->vies = 10;
+    }
+
     jeu_data->message_resultat[0] = '\0';
 
     reset_cases(jeu_data->tab_cases, jeu_data->h_window, jeu_data->w_window, resources->case_bleue);
@@ -123,7 +130,7 @@ void gerer_evenements(SDL_Event *event, jeu_data_t *jeu_data, resources_t *resou
 
         // On stoppe la partie si le joueur a trouvé toutes les cases
         if (file_est_vide(jeu_data->f)) {
-            sprintf(jeu_data->message_resultat, "Manche gagne !");
+            sprintf(jeu_data->message_resultat, "Bravo !");
             update_graphics(jeu_data, resources, renderer);
             jeu_data->nb_cases_a_trouver++;
             if (jeu_data->nb_cases_a_trouver > jeu_data->h_window * jeu_data->w_window) {
@@ -158,24 +165,32 @@ void gerer_evenements(SDL_Event *event, jeu_data_t *jeu_data, resources_t *resou
  * 
  */
 void update_graphics(jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer *renderer) {
-    char message_texte_vies[50];
+    char message_texte_manche[50];
     SDL_Color blanc = {255, 255, 255};
-    SDL_Rect dstrect_texte_vies = {W_CASE/6, H_CASE/12, W_CASE, H_CASE/2};
-    SDL_Rect dstrect_texte_resultat = {jeu_data->w_window * W_CASE / 2, jeu_data->h_window/2, W_CASE, H_CASE*0.7};
+    SDL_Rect dstrect_texte_manche = {20, 10, 150, 40};
+    SDL_Rect dstrect_texte_vies = {320, 10, 100, 40};
+    SDL_Rect dstrect_texte_resultat = {360, (650 - (325 - 0.5 * jeu_data->h_window * H_CASE) * 0.5) - 20, 100, 40};
 
 
     // Adaptation de la taille du texte
     if (strcmp(jeu_data->message_resultat, "Manche gagne !") == 0) {
-        dstrect_texte_resultat.w = W_CASE * 1.5;
-        dstrect_texte_resultat.h = H_CASE * 0.9;
+        dstrect_texte_resultat.x = 310;
+        dstrect_texte_resultat.y -= 5;
+        dstrect_texte_resultat.w = 180;
+        dstrect_texte_resultat.h = 50;
     }
 
     // Application du fond
     SDL_RenderCopy(renderer, resources->fond, NULL, NULL);
 
+
+    // MAJ du texte indiquant la manche actuelle
+    sprintf(message_texte_manche, "Manche : %d", jeu_data->nb_cases_a_trouver - 2);
+    update_message_text(message_texte_manche, &resources->texte_manche, renderer, resources->font, blanc);
+    SDL_RenderCopy(renderer, resources->texte_manche, NULL, &dstrect_texte_manche);
+
     // MAJ du texte indiquant le nombre de vies restantes
-    sprintf(message_texte_vies, "Vies : %d", jeu_data->vies);
-    update_message_text(message_texte_vies, &resources->texte_vies, renderer, resources->font, blanc);
+    afficher_vies(renderer, jeu_data->vies, resources->coeur);
     SDL_RenderCopy(renderer, resources->texte_vies, NULL, &dstrect_texte_vies);
 
     // MAJ du texte indiquant le résultat de la partie
@@ -201,6 +216,7 @@ void update_historique(jeu_data_t *jeu_data) {
 void update_derniere_grille(jeu_data_t *jeu_data) {
     char *texte = malloc((jeu_data->h_window * (jeu_data->w_window + 1) + 1) * sizeof(char));
     int cpt = 0, continuer;
+    char c;
 
     // Modélisation de la grille par une chaîne de caractères
     // Initialisation de texte
@@ -221,7 +237,11 @@ void update_derniere_grille(jeu_data_t *jeu_data) {
         for (int i = 0; i < jeu_data->h_window && continuer; i++) {
             for (int j = 0; j < jeu_data->w_window && continuer; j++) {
                 if (cases_correspondent(&jeu_data->tab_cases[i][j], ptr_case)) {
-                    texte[i * (jeu_data->w_window + 1) + j] = k + '1';
+                    c = k + '1';
+                    if (c > '9') {
+                        c = '+';
+                    }
+                    texte[i * (jeu_data->w_window + 1) + j] = c;
                     cpt--;
                     continuer = 0;
                 }
@@ -246,7 +266,10 @@ void free_resources(resources_t resources) {
     SDL_DestroyTexture(resources.case_bleue);
     SDL_DestroyTexture(resources.case_blanche);
     SDL_DestroyTexture(resources.case_noire);
+    SDL_DestroyTexture(resources.coeur);
     SDL_DestroyTexture(resources.texte_vies);
+    SDL_DestroyTexture(resources.texte_manche);
+    SDL_DestroyTexture(resources.texte_resultat);
     SDL_DestroyTexture(resources.fond);
     TTF_CloseFont(resources.font);
 }
