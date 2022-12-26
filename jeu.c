@@ -2,9 +2,9 @@
 #include <string.h>
 #include "jeu.h"
 #include "processing.h"
-#include "../type/file.h"
-#include "../fichiers.h"
-#include "../fonctions_SDL.h"
+#include "type/file.h"
+#include "fichiers.h"
+#include "fonctions_SDL.h"
 
 
 /**

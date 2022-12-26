@@ -4,8 +4,8 @@
 #include <SDL2/SDL.h>
 #include "processing.h"
 #include "jeu.h"
-#include "../type/case.h"
-#include "../type/file.h"
+#include "type/case.h"
+#include "type/file.h"
 
 case_t **create_tab_cases(int n, int m);
 void free_tab_cases(case_t **tab, int n);

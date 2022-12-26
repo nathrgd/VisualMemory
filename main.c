@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "processing/processing.h"
+#include "processing.h"
 #include "fichiers.h"
 #include "fonctions_SDL.h"
-#include "processing/jeu.h"
+#include "jeu.h"
 
 
 
