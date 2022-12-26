@@ -117,10 +117,15 @@ void ecrire(const char *nomFichier, const char *contenu) {
 void ecrire_en_debut(const char *nomFichier, const char *contenu) {
     FILE *fic = fopen(nomFichier, "r");
     char **lignes;
-    int n, i;
+    int n, i, res;
 
     if (fic == NULL) {
-        printf("Erreur lors de l'ouverture de '%s' : impossible de lire le fichier\n", nomFichier);
+        // Le fchier n'existe pas
+        res = system("touch historique.txt");
+        ecrire_en_debut(nomFichier, contenu);
+        if (res != 0) {
+            printf("Erreur lors de l'ouverture de '%s' : impossible de lire le fichier\n", nomFichier);
+        }
     } else {
         n = nb_lignes(nomFichier) + 2;
         // On limite l'historique aux 10 dernières parties

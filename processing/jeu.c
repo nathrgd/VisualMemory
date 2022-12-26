@@ -208,7 +208,7 @@ void update_graphics(jeu_data_t *jeu_data, resources_t *resources, SDL_Renderer 
 
 void update_historique(jeu_data_t *jeu_data) {
     char * texte = get_texte_pour_historique(jeu_data->nb_cases_a_trouver - 2, jeu_data->score);
-    ecrire_en_debut("Historique.txt", texte);
+    ecrire_en_debut("historique.txt", texte);
     free(texte);
 }
 
