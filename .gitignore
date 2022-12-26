@@ -1,7 +1,7 @@
 .vscode/*
 tests.c
 *.o
-main
+visualmemory
 grille.txt
 historique.txt
 derniere_grille.txt

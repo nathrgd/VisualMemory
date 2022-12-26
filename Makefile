@@ -2,15 +2,15 @@ CC = gcc
 CFLAGS = -Wall -O2 -g
 LIBS = -L./SDL2_ttf/.libs
 LDFLAGS = `sdl2-config --cflags --libs` -lSDL2_ttf
-SRC = main.c type/case.c type/file.c processing.c jeu.c fichiers.c fonctions_SDL.c
-EXEC = main
+SRC = visualmemory.c type/case.c type/file.c processing.c jeu.c fichiers.c fonctions_SDL.c
+EXEC = visualmemory
 OBJ = $(SRC:.c=.o)
 
 
 all: $(EXEC)
 
 
-main: $(OBJ)
+visualmemory: $(OBJ)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LIBS) $(LDFLAGS)
 
 
